@@ -1,0 +1,186 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. P91.
+      *AUTHOR. MIGEL H. TAN.
+      *INSTALLATION. VALENZUELA CITY
+      *DATE-WRITTEN. DECEMBER 18, 2025.
+      *DATE-COMPILED. DECEMBER 18, 2025.
+      *SECURITY. FOR BSIT 2-4.
+      *REMARKS. STUDENT POPULATION REPORT PAGE 91 NO TABLE.
+
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SOURCE-COMPUTER. IBM-PC.
+       OBJECT-COMPUTER. IBM-PC.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT INFILE ASSIGN TO "INP91.TXT".
+           SELECT OUTFILE ASSIGN TO "OUTP91".
+
+       DATA DIVISION.
+       FILE SECTION.
+
+       FD INFILE
+           LABEL RECORD IS STANDARD
+           RECORD CONTAINS 28 CHARACTERS
+           DATA RECORD IS DAGDAG.
+
+       01 DAGDAG.
+           02 YEAR-DATA OCCURS 4 TIMES.
+              03 YR PIC 9.
+              03 BSCS-COUNT PIC 9(3).
+              03 BSIT-COUNT PIC 9(3).
+
+       FD OUTFILE
+           LABEL RECORD IS OMITTED
+           DATA RECORD IS BAWAS.
+
+       01 BAWAS.
+           02 FILLER PIC X(80).
+
+       WORKING-STORAGE SECTION.
+
+       01 EOFSW PIC 9 VALUE 0.
+
+       01 MESA.
+           02 TAON OCCURS 4 TIMES.
+              03 KURSO OCCURS 2 TIMES PIC 9(4) VALUE 0.
+
+       01 SUB1 PIC 9 VALUE 0.
+       01 SUB2 PIC 9 VALUE 0.
+
+       01 TOT-YR-TABLE.
+           02 TOT-YR OCCURS 4 TIMES PIC 9(4) VALUE 0.
+
+       01 TOT-CR-TABLE.
+           02 TOT-CR OCCURS 2 TIMES PIC 9(4) VALUE 0.
+
+       01 HEAD-1.
+           02 FILLER PIC X(20) VALUE SPACES.
+           02 FILLER PIC X(41)
+              VALUE "Polytechnic University of the Philippines".
+           02 FILLER PIC X(19) VALUE SPACES.
+
+       01 HEAD-2.
+           02 FILLER PIC X(31) VALUE SPACES.
+           02 FILLER PIC X(17) VALUE "Sta. Mesa, Manila".
+           02 FILLER PIC X(32) VALUE SPACES.
+
+       01 HEAD-3.
+           02 FILLER PIC X(31) VALUE SPACES.
+           02 FILLER PIC X(18) VALUE "Student Population".
+           02 FILLER PIC X(31) VALUE SPACES.
+
+       01 SUBHEAD-1.
+           02 FILLER PIC X(2) VALUE SPACES.
+           02 FILLER PIC X(10) VALUE "Year Level".
+           02 FILLER PIC X(24) VALUE SPACES.
+           02 FILLER PIC X(6) VALUE "Course".
+           02 FILLER PIC X(38) VALUE SPACES.
+
+       01 SUBHEAD-2.
+           02 FILLER PIC X(25) VALUE SPACES.
+           02 FILLER PIC X(4) VALUE "BSCS".
+           02 FILLER PIC X(10) VALUE SPACES.
+           02 FILLER PIC X(4) VALUE "BSIT".
+           02 FILLER PIC X(10) VALUE SPACES.
+           02 FILLER PIC X(5) VALUE "Total".
+           02 FILLER PIC X(22) VALUE SPACES.
+
+       01 DETALYE.
+           02 FILLER PIC X(2) VALUE SPACES.
+           02 P-YEAR-LABEL PIC X(9).
+           02 FILLER PIC X(11) VALUE SPACES.
+           02 P-TAB OCCURS 2 TIMES.
+              03 P-COUNT PIC ZZ,ZZ9.
+              03 FILLER PIC X(8) VALUE SPACES.
+           02 P-TOT-YEAR PIC ZZ,ZZ9.
+           02 FILLER PIC X(4) VALUE SPACES.
+
+       01 BLANK-LINE.
+           02 FILLER PIC X(80) VALUE SPACES.
+
+       01 TOTAL-LINE.
+           02 FILLER PIC X(2) VALUE SPACES.
+           02 FILLER PIC X(5) VALUE "Total".
+           02 FILLER PIC X(15) VALUE SPACES.
+           02 P-TOTCO OCCURS 2 TIMES.
+              03 P-TC PIC ZZ,ZZ9.
+              03 FILLER PIC X(10) VALUE SPACES.
+           02 FILLER PIC X(20) VALUE SPACES.
+
+       PROCEDURE DIVISION.
+       MAIN-RTN.
+           PERFORM INIT-RTN THRU INIT-RTN-END.
+           PERFORM PROCESS-RTN UNTIL EOFSW = 1.
+           PERFORM FINISH-RTN.
+           STOP RUN.
+
+       INIT-RTN.
+           OPEN INPUT INFILE OUTPUT OUTFILE.
+           READ INFILE AT END MOVE 1 TO EOFSW
+                GO TO INIT-RTN-END
+           END-READ.
+           IF EOFSW = 0
+               PERFORM HEADING-RTN
+           END-IF.
+       INIT-RTN-END.
+           EXIT.
+
+       HEADING-RTN.
+           WRITE BAWAS FROM HEAD-1 AFTER PAGE.
+           WRITE BAWAS FROM HEAD-2 AFTER 1.
+           WRITE BAWAS FROM BLANK-LINE AFTER 1.
+           WRITE BAWAS FROM BLANK-LINE AFTER 1.
+           WRITE BAWAS FROM HEAD-3 AFTER 1.
+           WRITE BAWAS FROM BLANK-LINE AFTER 1.
+           WRITE BAWAS FROM SUBHEAD-1 AFTER 1.
+           WRITE BAWAS FROM SUBHEAD-2 AFTER 1.
+           EXIT.
+
+       PROCESS-RTN.
+           PERFORM PROCESS-YEAR VARYING SUB1 FROM 1 BY 1
+               UNTIL SUB1 > 4.
+           MOVE 1 TO EOFSW.
+           EXIT.
+
+       PROCESS-YEAR.
+           MOVE BSCS-COUNT OF YEAR-DATA (SUB1) TO KURSO (SUB1, 1).
+           MOVE BSIT-COUNT OF YEAR-DATA (SUB1) TO KURSO (SUB1, 2).
+           ADD BSCS-COUNT OF YEAR-DATA (SUB1) TO TOT-CR (1).
+           ADD BSIT-COUNT OF YEAR-DATA (SUB1) TO TOT-CR (2).
+           ADD BSCS-COUNT OF YEAR-DATA (SUB1) TO TOT-YR (SUB1).
+           ADD BSIT-COUNT OF YEAR-DATA (SUB1) TO TOT-YR (SUB1).
+           EXIT.
+
+       FINISH-RTN.
+           PERFORM MOVE1-RTN VARYING SUB1 FROM 1 BY 1 UNTIL SUB1 > 4.
+           WRITE BAWAS FROM BLANK-LINE AFTER 1.
+           PERFORM TOTAL-COUR-RTN.
+           CLOSE INFILE OUTFILE.
+           DISPLAY "TAPOS NA.".
+           EXIT.
+
+       MOVE1-RTN.
+           IF SUB1 = 1
+              MOVE "Freshmen " TO P-YEAR-LABEL
+           ELSE IF SUB1 = 2
+              MOVE "Sophomore" TO P-YEAR-LABEL
+           ELSE IF SUB1 = 3
+              MOVE "Junior   " TO P-YEAR-LABEL
+           ELSE
+              MOVE "Senior   " TO P-YEAR-LABEL
+           END-IF.
+           PERFORM MOVE2-RTN VARYING SUB2 FROM 1 BY 1 UNTIL SUB2 > 2.
+           MOVE TOT-YR (SUB1) TO P-TOT-YEAR.
+           WRITE BAWAS FROM DETALYE AFTER 1.
+           EXIT.
+
+       MOVE2-RTN.
+           MOVE KURSO (SUB1, SUB2) TO P-COUNT (SUB2).
+           EXIT.
+
+       TOTAL-COUR-RTN.
+           MOVE TOT-CR (1) TO P-TC (1).
+           MOVE TOT-CR (2) TO P-TC (2).
+           WRITE BAWAS FROM TOTAL-LINE AFTER 1.
+           EXIT.
