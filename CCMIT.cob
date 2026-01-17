@@ -1,0 +1,130 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. CCMITREP.
+      *AUTHOR. MIGEL H. TAN.
+      *INSTALLATION. VALENZUELA CITY.
+      *DATE-WRITTEN. DECEMBER 7, 2025.
+      *DATE-COMPILED. DECEMBER 7, 2025.
+      *SECURITY. FOR BSIT 2-4.
+      *REMARKS. REPORT FOR CCMIT ENROLLMENT TABLE.
+
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SOURCE-COMPUTER. IBM-PC.
+       OBJECT-COMPUTER. IBM-PC.
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT STUDENT ASSIGN TO "CCMITIN.TXT".
+           SELECT OUTFILE ASSIGN TO "CCMITOUT".
+
+       DATA DIVISION.
+       FILE SECTION.
+
+       FD STUDENT
+           LABEL RECORD IS STANDARD
+           DATA RECORD IS CCMIT.
+
+       01 CCMIT.
+           02 YEAR-TABLE OCCURS 4 TIMES.
+              03 COURSE OCCURS 2 TIMES PIC 999.
+
+       FD OUTFILE
+           LABEL RECORD IS OMITTED
+           DATA RECORD IS OUTREC.
+
+       01 OUTREC.
+           02 OUT-LINE PIC X(80).
+
+       WORKING-STORAGE SECTION.
+
+       01 EOFSW PIC 9 VALUE 0.
+       01 I PIC 9 VALUE 0.
+       01 J PIC 9 VALUE 0.
+
+       01 TOTAL-YEAR OCCURS 4 TIMES PIC 9(4) VALUE 0.
+
+       01 DETAILS.
+           02 FILLER PIC X(5).
+           02 PRT-YEAR PIC X(9).
+           02 P-TAB OCCURS 2 TIMES.
+              03 FILLER PIC X(5).
+              03 P-CTR PIC 999.
+           02 FILLER PIC X(5).
+           02 P-TSTUDYEAR PIC 99,999.
+
+       01 HEAD-1.
+           02 FILLER PIC X(10) VALUE SPACES.
+           02 FILLER PIC X(20) VALUE "CCMIT ENROLLMENT".
+           02 FILLER PIC X(50) VALUE SPACES.
+
+       01 HEAD-2.
+           02 FILLER PIC X(2) VALUE SPACES.
+           02 FILLER PIC X(4) VALUE "YEAR".
+           02 FILLER PIC X(4) VALUE SPACES.
+           02 FILLER PIC X(4) VALUE "BSIT".
+           02 FILLER PIC X(6) VALUE SPACES.
+           02 FILLER PIC X(4) VALUE "BSCS".
+           02 FILLER PIC X(6) VALUE SPACES.
+           02 FILLER PIC X(5) VALUE "TOTAL".
+           02 FILLER PIC X(45) VALUE SPACES.
+
+       PROCEDURE DIVISION.
+
+       MAIN-RTN.
+           PERFORM INIT-RTN THRU INIT-RTN-END.
+           PERFORM PROCESS-RTN UNTIL EOFSW = 1.
+           PERFORM FINISH-RTN.
+           STOP RUN.
+
+       INIT-RTN.
+           OPEN INPUT STUDENT OUTPUT OUTFILE.
+           READ STUDENT
+              AT END MOVE 1 TO EOFSW
+           END-READ.
+           IF EOFSW = 1
+              GO TO INIT-RTN-END.
+           WRITE OUTREC FROM HEAD-1 AFTER PAGE.
+           WRITE OUTREC FROM HEAD-2 AFTER 1.
+       INIT-RTN-END.
+           EXIT.
+
+       PROCESS-RTN.
+           PERFORM ADD-RTN
+               VARYING I FROM 1 BY 1 UNTIL I > 4
+               AFTER J FROM 1 BY 1 UNTIL J > 2.
+
+           PERFORM MOVE-RTN
+               VARYING I FROM 1 BY 1 UNTIL I > 4.
+
+           READ STUDENT
+              AT END MOVE 1 TO EOFSW
+           END-READ.
+           EXIT.
+
+       ADD-RTN.
+           ADD COURSE (I, J) TO TOTAL-YEAR (I).
+           EXIT.
+
+       MOVE-RTN.
+           IF I = 1 MOVE "FRESHMEN"  TO PRT-YEAR
+                  GO TO A.
+           IF I = 2 MOVE "SOPHOMORE" TO PRT-YEAR
+                  GO TO A.
+           IF I = 3 MOVE "JUNIOR"    TO PRT-YEAR
+                  GO TO A.
+           IF I = 4 MOVE "SENIOR"    TO PRT-YEAR.
+       A.
+           PERFORM MOVE2-RTN
+               VARYING J FROM 1 BY 1 UNTIL J > 2.
+
+           MOVE TOTAL-YEAR (I) TO P-TSTUDYEAR.
+
+           WRITE OUTREC FROM DETAILS AFTER 1.
+           EXIT.
+
+       MOVE2-RTN.
+           MOVE COURSE (I, J) TO P-CTR (J).
+           EXIT.
+
+       FINISH-RTN.
+           CLOSE STUDENT OUTFILE.
+           EXIT.
