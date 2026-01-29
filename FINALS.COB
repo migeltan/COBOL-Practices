@@ -83,8 +83,8 @@
        HEADING-RTN.
            DISPLAY SCRE.
            DISPLAY ' ' LINE 1.
-           DISPLAY 'Professional Regulation' LINE 2 COLUMN 23
-           DISPLAY 'Commission' LINE 2 COLUMN 47.
+           DISPLAY 'Polytechnic University' LINE 2 COLUMN 23
+           DISPLAY 'of the Philippines' LINE 2 COLUMN 47.
            DISPLAY ' ' LINE 3 COLUMN 40.
            DISPLAY ' ' LINE 4 COLUMN 40.
            DISPLAY 'IT Professional Board ' LINE 5 COLUMN 23.
