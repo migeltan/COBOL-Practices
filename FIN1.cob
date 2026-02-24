@@ -1,0 +1,156 @@
+       IDENTIFICATION DIVISION.
+       PROGRAM-ID. STORM.
+
+       ENVIRONMENT DIVISION.
+       CONFIGURATION SECTION.
+       SOURCE-COMPUTER. IBM-PC.
+       OBJECT-COMPUTER. IBM-PC.
+
+       INPUT-OUTPUT SECTION.
+       FILE-CONTROL.
+           SELECT OUTFILE ASSIGN TO "TAN1.TXT".
+
+       DATA DIVISION.
+       FILE SECTION.
+       FD OUTFILE
+           DATA RECORD IS OUTREC.
+
+       01 OUTREC.
+           02 D-NAME        PIC X(20).
+           02 D-TYPE        PIC X(20).
+           02 D-RAINFALL    PIC X(6).
+           02 D-AREA        PIC X(10).
+           02 D-MONTH       PIC X(12).
+
+       WORKING-STORAGE SECTION.
+       01  STORM-NAME       PIC X(20).
+       01  STORM-TYPE       PIC X(20).
+       01  COLOR-RAINFALL   PIC X(6).
+       01  AFFECTED-AREA    PIC X(10).
+       01  MONTH-NAME       PIC X(12).
+       01  RAINFALL-KPH     PIC 9(3).
+       01  RESPONSE         PIC X     VALUE 'Y'.
+
+       01  STRONGEST-STORM  PIC X(20) VALUE SPACES.
+       01  HIGHEST-KPH      PIC 9(3)  VALUE 0.
+       01  MOST-FLOODED     PIC X(10) VALUE SPACES.
+       01  HIGHEST-FLOODS   PIC 9(3)  VALUE 0.
+       01  MONTH-STORMS     PIC 9(3)  VALUE 0.
+       01  STORM-MONTH      PIC X(12) VALUE SPACES.
+       01  RECORD-COUNT     PIC 9(3)  VALUE 0.
+
+       01  TEMP-AREA        PIC 9(3).
+       01  AREA-COUNT       PIC 9(3)  VALUE 0.
+
+       SCREEN SECTION.
+       01  SCRE.
+           02  BLANK SCREEN.
+
+       PROCEDURE DIVISION.
+       MAIN-RTN.
+           OPEN OUTPUT OUTFILE.
+           PERFORM PROCESS-RTN UNTIL RESPONSE = 'N' OR RESPONSE = 'n'.
+           PERFORM SHOW-SUMMARY.
+           CLOSE OUTFILE.
+           DISPLAY "END OF PROGRAM" LINE 20 COLUMN 30.
+           STOP RUN.
+
+       HEAD-RTN.
+           DISPLAY "STORM TRACKING SYSTEM 2025" LINE 1 COLUMN 25.
+
+       PROCESS-RTN.
+           DISPLAY SCRE.
+           PERFORM HEAD-RTN.
+           PERFORM INPUT-DATA.
+           PERFORM DETERMINE-TYPE.
+           PERFORM UPDATE-SUMMARY.
+           PERFORM SHOW-RESULTS.
+           PERFORM WRITE-OUT.
+           PERFORM ASK-CONTINUE.
+
+       INPUT-DATA.
+           DISPLAY "NAME OF STORM       : " LINE 5 COLUMN 5.
+           ACCEPT STORM-NAME.
+
+           DISPLAY "TYPE OF STORM       : " LINE 6 COLUMN 5.
+           ACCEPT STORM-TYPE.
+
+           DISPLAY "COLOR RAINFALL (KPH): " LINE 7 COLUMN 5.
+           ACCEPT RAINFALL-KPH.
+
+           DISPLAY "AFFECTED AREA       : " LINE 8 COLUMN 5.
+           ACCEPT TEMP-AREA.
+           MOVE TEMP-AREA TO AFFECTED-AREA.
+
+           DISPLAY "MONTH               : " LINE 9 COLUMN 5.
+           ACCEPT MONTH-NAME.
+
+       DETERMINE-TYPE.
+           IF RAINFALL-KPH < 60
+               MOVE "LPA" TO COLOR-RAINFALL
+           ELSE IF RAINFALL-KPH >= 60 AND RAINFALL-KPH <= 118
+               MOVE "TROPICAL DEPRESSION" TO STORM-TYPE
+               MOVE "YELLOW" TO COLOR-RAINFALL
+           ELSE IF RAINFALL-KPH >= 119 AND RAINFALL-KPH <= 184
+               MOVE "SIGNAL 3" TO STORM-TYPE
+               MOVE "ORANGE" TO COLOR-RAINFALL
+           ELSE IF RAINFALL-KPH >= 185
+               MOVE "SIGNAL 4" TO STORM-TYPE
+               MOVE "RED" TO COLOR-RAINFALL
+           END-IF.
+
+       UPDATE-SUMMARY.
+           ADD 1 TO RECORD-COUNT.
+
+           IF RAINFALL-KPH > HIGHEST-KPH
+               MOVE RAINFALL-KPH TO HIGHEST-KPH
+               MOVE STORM-NAME TO STRONGEST-STORM
+           END-IF.
+
+           IF TEMP-AREA > HIGHEST-FLOODS
+               MOVE TEMP-AREA TO HIGHEST-FLOODS
+               MOVE AFFECTED-AREA TO MOST-FLOODED
+           END-IF.
+
+           IF RECORD-COUNT = 1
+               MOVE MONTH-NAME TO STORM-MONTH
+               MOVE 1 TO MONTH-STORMS
+           ELSE
+               IF MONTH-NAME = STORM-MONTH
+                   ADD 1 TO MONTH-STORMS
+               END-IF
+           END-IF.
+
+       SHOW-RESULTS.
+           DISPLAY "NAME OF STORM       : " STORM-NAME
+               LINE 11 COLUMN 5.
+            DISPLAY "TYPE OF STORM       : " STORM-TYPE
+               LINE 12 COLUMN 5.
+           DISPLAY "COLOR RAINFALL      : " COLOR-RAINFALL
+               LINE 13 COLUMN 5.
+           DISPLAY "AFFECTED AREA       : " AFFECTED-AREA
+               LINE 14 COLUMN 5.
+           DISPLAY "MONTH               : " MONTH-NAME
+               LINE 15 COLUMN 5.
+
+       WRITE-OUT.
+           MOVE STORM-NAME TO D-NAME.
+           MOVE STORM-TYPE TO D-TYPE.
+           MOVE COLOR-RAINFALL TO D-RAINFALL.
+           MOVE AFFECTED-AREA TO D-AREA.
+           MOVE MONTH-NAME TO D-MONTH.
+           WRITE OUTREC.
+
+       ASK-CONTINUE.
+           DISPLAY "ENTER ANOTHER RECORD (Y/N)? " LINE 17 COLUMN 5.
+           ACCEPT RESPONSE.
+
+       SHOW-SUMMARY.
+           DISPLAY SCRE.
+           PERFORM HEAD-RTN.
+           DISPLAY "STRONGEST STORM IN TERMS OF KM/H  : "
+               STRONGEST-STORM LINE 6 COLUMN 5.
+           DISPLAY "MOST FLOODED AREA IN 2025         : "
+               MOST-FLOODED LINE 8 COLUMN 5.
+           DISPLAY "MONTH WITH MOST NUMBERED OF STORMS: "
+               STORM-MONTH LINE 10 COLUMN 5.
