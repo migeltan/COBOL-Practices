@@ -68,29 +68,30 @@
            PERFORM COURSE-UNI-RTN THRU COURSE-UNI-RTN-END.
            PERFORM GRADE-RTN THRU GRADE-RTN-END.
            PERFORM CONTINUE-RTN.
+           PERFORM PRINT-RTN.
 
        HEADING-RTN.
            DISPLAY SCRE.
            DISPLAY " " LINE 1 COLUMN 1.
-           DISPLAY "Cisco Certified" LINE 2 COLUMN 33.
-           DISPLAY " Network Administration" LINE 2 COLUMN 47.
+           DISPLAY "Cisco Certified" LINE 2 COLUMN 21.
+           DISPLAY " Network Administration" LINE 2 COLUMN 36.
            DISPLAY " " LINE 3 COLUMN 1.
            DISPLAY "Course Results" LINE 4 COLUMN 34.
            DISPLAY "2026" LINE 5 COLUMN 38.
 
        NAME-NUMBER-RTN.
            DISPLAY "Enter your name: " LINE 7 COLUMN 5.
-           ACCEPT SNA LINE 7 COLUMN 40.
+           ACCEPT SNA LINE 7 COLUMN 60.
 
            DISPLAY "Enter your student number: " LINE 8 COLUMN 5.
-           ACCEPT SNO LINE 8 COLUMN 40.
+           ACCEPT SNO LINE 8 COLUMN 60.
 
        COURSE-UNI-RTN.
 
        UNI-RTN.
            DISPLAY "Enter your university code: " LINE 9 COLUMN 5.
-           ACCEPT UC LINE 9 COLUMN 40.
-           EVALUATE CC
+           ACCEPT UC LINE 9 COLUMN 60.
+           EVALUATE UC
             WHEN 1
             MOVE "UP" TO UNA
             WHEN 2
@@ -106,16 +107,16 @@
             WHEN 7
             MOVE "FEU" TO UNA
             WHEN OTHER
-            DISPLAY "1-7 Only!" LINE 9 COLUMN 25
+            DISPLAY "1-7 Only!" LINE 9 COLUMN 35
             GO TO UNI-RTN
            END-EVALUATE.
 
            DISPLAY "University: " LINE 10 COLUMN 5.
-           DISPLAY UNA LINE 10 COLUMN 40.
+           DISPLAY UNA LINE 10 COLUMN 60.
 
        COURSE-RTN.
            DISPLAY "Enter your program code: " LINE 11 COLUMN 5.
-           ACCEPT CC LINE 11 COLUMN 40.
+           ACCEPT CC LINE 11 COLUMN 60.
            EVALUATE CC
             WHEN 1
             MOVE "BSCS" TO CNA
@@ -126,12 +127,12 @@
             WHEN 4
             MOVE "BSCpE" TO CNA
             WHEN OTHER
-            DISPLAY "1-4 Only!" LINE 11 COLUMN 25
+            DISPLAY "1-4 Only!" LINE 11 COLUMN 35
             GO TO COURSE-RTN
            END-EVALUATE.
 
            DISPLAY "Program: " LINE 12 COLUMN 5.
-           DISPLAY CNA LINE 12 COLUMN 40.
+           DISPLAY CNA LINE 12 COLUMN 60.
 
        COURSE-UNI-RTN-END.
 
@@ -139,40 +140,40 @@
 
        MID-RTN.
            DISPLAY "Enter your midterm grade: " LINE 13 COLUMN 5.
-           ACCEPT MID LINE 13 COLUMN 40.
+           ACCEPT MID LINE 13 COLUMN 60.
            IF MID < 1.00 OR MID > 5.00
-               DISPLAY "1.00 - 5.00 only!" DISPLAY LINE 13 COLUMN 25
+               DISPLAY "1.00 - 5.00 only!" LINE 13 COLUMN 35
                GO TO MID-RTN
                END-IF.
 
        FIN-RTN.
            DISPLAY "Enter your final grade: " LINE 14 COLUMN 5.
-           ACCEPT FIN LINE 14 COLUMN 40.
+           ACCEPT FIN LINE 14 COLUMN 60.
            IF FIN < 1.00 OR FIN > 5.00
-               DISPLAY "1.00 - 5.00 only!" DISPLAY LINE 14 COLUMN 25
+               DISPLAY "1.00 - 5.00 only!" LINE 14 COLUMN 35
                GO TO FIN-RTN
                END-IF.
        
        REM-RTN.
            COMPUTE AVE = (MID + FIN) / 2
            DISPLAY "Your average is: " LINE 15 COLUMN 5.
-           DISPLAY AVE LINE 15 COLUMN 40.
+           DISPLAY AVE LINE 15 COLUMN 60.
 
            DISPLAY "Remarks: " LINE 16 COLUMN 5.
            IF AVE > 1.00 AND AVE < 1.15
-               DISPLAY "Summa Cum Laude!" DISPLAY LINE 16 COLUMN 40
+               DISPLAY "Summa Cum Laude!" LINE 16 COLUMN 60
                MOVE "Passed" TO REM
            ELSE IF AVE > 1.15 AND AVE < 1.50
-               DISPLAY "Magna Cum Laude!" DISPLAY LINE 16 COLUMN 40
+               DISPLAY "Magna Cum Laude!" LINE 16 COLUMN 60
                MOVE "Passed" TO REM
            ELSE IF AVE > 1.50 AND AVE < 1.75
-               DISPLAY "Cum Laude!" DISPLAY LINE 16 COLUMN 40
+               DISPLAY "Cum Laude!" LINE 16 COLUMN 60
                MOVE "Passed" TO REM
            ELSE IF AVE > 1.75 AND AVE < 3.00 
-               DISPLAY "Passed!" DISPLAY LINE 16 COLUMN 40
+               DISPLAY "Passed!" LINE 16 COLUMN 60
                MOVE "Passed" TO REM
            ELSE 
-               DISPLAY "Failed." DISPLAY LINE 16 COLUMN 40
+               DISPLAY "Failed." LINE 16 COLUMN 60
                MOVE "Failed" TO REM
            END-IF
            END-IF
@@ -194,3 +195,11 @@
                  GO TO CONTINUE-RTN
               END-IF
            END-IF.
+       
+       PRINT-RTN.
+           MOVE SNA TO P-SNA.
+           MOVE SNO TO P-SNO.
+           MOVE CNA TO P-CNA.
+           MOVE UNA TO P-UNA.
+           MOVE AVE TO P-AVE.
+           MOVE REM TO P-REM.
