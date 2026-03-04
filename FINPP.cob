@@ -95,7 +95,7 @@
            DISPLAY 'University Code (1-5): ' LINE 10 COLUMN 10.
            ACCEPT UNC LINE 10 COLUMN 55.
            IF UNC = 1
-           MOVE 1 TO UNC
+      *    MOVE 1 TO UNC
            MOVE 'UP' TO UNINAME
 
            ELSE IF UNC = 2
@@ -152,7 +152,7 @@
            IF TOTITEMS IS GREATER THAN 100 OR TOTITEMS IS LESS THAN 1
            DISPLAY 'Must be 0-100!' LINE 14 COLUMN 32
            GO TO TOTAL-RTN.
-
+       TOTAL-RTN-END.
        TEST-RTN.
            DISPLAY 'Test Result (Score): ' LINE 15 COLUMN 10.
            ACCEPT TESTR LINE 15 COLUMN 55.
@@ -160,8 +160,6 @@
            DISPLAY 'Must be 0-100!' LINE 15 COLUMN 32
            GO TO TEST-RTN.
        TEST-RTN-END.
-
-       TOTAL-RTN-END.
 
        REMARKS-RTN.
            COMPUTE RAVERAGE = (TESTR / TOTITEMS) * 100.
