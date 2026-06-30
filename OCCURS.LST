@@ -1,0 +1,235 @@
+     1	      IDENTIFICATION DIVISION.							12DEC25 09:08:18  PAGE	  1
+     2	      PROGRAM-ID. STUDREP.
+     3
+     4	     *AUTHOR. MIGEL H. TAN.
+     5	     *REMARKS. STUDENT QUIZ REPORT WITH TABLE HANDLING.
+     6
+     7	      ENVIRONMENT DIVISION.
+     8	      INPUT-OUTPUT SECTION.
+     9	      FILE-CONTROL.
+    10            SELECT STUDENT ASSIGN TO "STUDQ.TXT".
+    11            SELECT OUTFILE ASSIGN TO "REPQ".
+    12
+    13	      DATA DIVISION.
+    14	      FILE SECTION.
+    15
+    16	      FD STUDENT
+    17		  LABEL RECORD IS STANDARD
+    18		  DATA RECORD IS INREC.
+    19
+    20	      01 INREC.
+    21		  02 SNO PIC 9(5).
+    22		  02 SNA PIC X(25).
+    23		  02 QUIZ OCCURS 5 TIMES PIC 99.
+    24
+    25	      FD OUTFILE
+    26		  LABEL RECORD IS OMITTED
+    27		  DATA RECORD IS OUTREC.
+    28
+    29	      01 OUTREC.
+    30		  02 FILLER PIC X(80).
+    31
+    32	      WORKING-STORAGE SECTION.
+    33
+    34	      01 EOFSW	     PIC 9 VALUE 0.
+    35	      01 PAGE-COUNT  PIC 9(2) VALUE 0.
+    36	      01 REC-COUNT   PIC 9(3) VALUE 0.
+    37
+    38	      01 WS-TOTAL    PIC 9(3) VALUE 0.
+    39	      01 WS-AVE      PIC 99V99.
+    40	      01 I	     PIC 9 VALUE 1.
+    41
+    42	      01 PRT-TABLE.
+    43		  02 PRT-SNO PIC 9(5).
+    44		  02 PRT-SNA PIC X(25).
+    45		  02 PRT-Q OCCURS 5 TIMES.
+    46		     03 PRT-QUIZ PIC ZZ.
+    47		  02 PRT-AVE PIC 99.99.
+    48
+    49	      01 HEAD-1.
+    50		  02 FILLER PIC X(36) VALUE SPACES.
+    51            02 FILLER PIC X(10) VALUE "puP".
+    52		  02 FILLER PIC X(35) VALUE SPACES.
+    53
+    54	      01 HEAD-2.
+    55		  02 FILLER PIC X(35) VALUE SPACES.
+    56            02 FILLER PIC X(12) VALUE "ccis".
+    57		  02 FILLER PIC X(30) VALUE SPACES.
+    58
+    59	      01 SUBHEAD-1.
+    60		  02 FILLER PIC X(2) VALUE SPACES.    61            02 FILLER PIC X(7) VALUE "Student".                                   12DEC25 09:08:18  PAGE    2
+    62		  02 FILLER PIC X(4) VALUE SPACES.
+    63            02 FILLER PIC X(7) VALUE "Student".
+    64		  02 FILLER PIC X(17) VALUE SPACES.
+    65            02 FILLER PIC X(4) VALUE "Quiz".
+    66		  02 FILLER PIC X(3) VALUE SPACES.
+    67            02 FILLER PIC X(4) VALUE "Quiz".
+    68		  02 FILLER PIC X(3) VALUE SPACES.
+    69            02 FILLER PIC X(4) VALUE "Quiz".
+    70		  02 FILLER PIC X(3) VALUE SPACES.
+    71            02 FILLER PIC X(4) VALUE "Quiz".
+    72		  02 FILLER PIC X(3) VALUE SPACES.
+    73            02 FILLER PIC X(4) VALUE "Quiz".
+    74		  02 FILLER PIC X(3) VALUE SPACES.
+    75            02 FILLER PIC X(8) VALUE "Average".
+    76		  02 FILLER PIC X(17) VALUE SPACES.
+    77
+    78	      01 SUBHEAD-2.
+    79		  02 FILLER PIC X(2) VALUE SPACES.
+    80            02 FILLER PIC X(6) VALUE "Number".
+    81		  02 FILLER PIC X(5) VALUE SPACES.
+    82            02 FILLER PIC X(4) VALUE "Name".
+    83		  02 FILLER PIC X(21) VALUE SPACES.
+    84            02 FILLER PIC X(2) VALUE "1".
+    85		  02 FILLER PIC X(5) VALUE SPACES.
+    86            02 FILLER PIC X(2) VALUE "2".
+    87		  02 FILLER PIC X(5) VALUE SPACES.
+    88            02 FILLER PIC X(2) VALUE "3".
+    89		  02 FILLER PIC X(5) VALUE SPACES.
+    90            02 FILLER PIC X(2) VALUE "4".
+    91		  02 FILLER PIC X(6) VALUE SPACES.
+    92            02 FILLER PIC X(2) VALUE "5".
+    93		  02 FILLER PIC X(25) VALUE SPACES.
+    94
+    95	      01 DETALYE.
+    96		  02 FILLER PIC X(2) VALUE SPACES.
+    97		  02 P-SNO PIC 9(5).
+    98		  02 FILLER PIC X(6) VALUE SPACES.
+    99		  02 P-SNA PIC X(25).
+   100		  02 PRT-QX OCCURS 5 TIMES.
+   101		     03 PRT-QV PIC ZZ.
+   102		     03 FILLER PIC X(5).
+   103		  02 P-AVE PIC 99.99.
+   104		  02 FILLER PIC X(15) VALUE SPACES.
+   105
+   106	     *01 TOTAL-LINE.
+   107	     *	  02 FILLER PIC X(2) VALUE SPACES.
+   108       *    02 FILLER PIC X(22) VALUE "Total Students Read :".
+   109	     *	  02 P-TOT PIC X(3).
+   110	     *	  02 FILLER PIC X(54) VALUE SPACES.
+   111
+   112	      01 BLANK-LINE.
+   113		  02 FILLER PIC X(80) VALUE SPACES.
+   114
+   115	      PROCEDURE DIVISION.
+   116	      MAIN-RTN.
+   117		  PERFORM INIT-RTN.
+   118		  PERFORM PROCESS-RTN UNTIL EOFSW = 1.
+   119		  PERFORM FINISH-RTN.
+   120		  STOP RUN.   121											12DEC25 09:08:18  PAGE	  3
+   122	      INIT-RTN.
+   123		  OPEN INPUT STUDENT OUTPUT OUTFILE.
+   124
+   125		  READ STUDENT
+   126		      AT END MOVE 1 TO EOFSW
+   127		  END-READ.
+   128
+   129		  IF EOFSW = 1
+   130                DISPLAY "EMPTY FILE"
+   131		      GO TO INIT-DONE
+   132		  END-IF
+   133
+   134		  PERFORM HEADING-RTN.
+   135
+   136	      INIT-DONE.
+   137		  EXIT.
+   138
+   139	      HEADING-RTN.
+   140		  WRITE OUTREC FROM HEAD-1 AFTER PAGE.
+   141		  WRITE OUTREC FROM HEAD-2 AFTER 1.
+   142		  WRITE OUTREC FROM SUBHEAD-1 AFTER 2.
+   143		  WRITE OUTREC FROM SUBHEAD-2 AFTER 1.
+   144		  MOVE 0 TO PAGE-COUNT.
+   145		  EXIT.
+   146
+   147	      PROCESS-RTN.
+   148		  MOVE SNO TO P-SNO.
+   149		  MOVE SNA TO P-SNA.
+   150
+   151		  MOVE 0 TO WS-TOTAL.
+   152
+   153		  PERFORM VARYING I FROM 1 BY 1 UNTIL I > 5
+   154		  MOVE QUIZ(I) TO PRT-QV(I)
+   155		  ADD QUIZ(I) TO WS-TOTAL
+   156		  END-PERFORM
+   157
+   158
+   159		  COMPUTE WS-AVE = WS-TOTAL / 5.
+   160		  MOVE WS-AVE TO P-AVE.
+   161
+   162		  WRITE OUTREC FROM DETALYE AFTER 1.
+   163
+   164		  ADD 1 TO REC-COUNT.
+   165		  ADD 1 TO PAGE-COUNT.
+   166
+   167		  READ STUDENT
+   168		      AT END MOVE 1 TO EOFSW
+   169		  END-READ.
+   170
+   171		  IF PAGE-COUNT = 10
+   172		      PERFORM HEADING-RTN
+   173		  END-IF.
+   174		  EXIT.
+   175
+   176	      FINISH-RTN.
+   177	     *	  MOVE REC-COUNT TO P-TOT.
+   178
+   179	     *	  WRITE OUTREC FROM BLANK-LINE AFTER 2.
+   180	     *	  WRITE OUTREC FROM TOTAL-LINE AFTER 1.   181											12DEC25 09:08:18  PAGE	  4
+   182		  CLOSE STUDENT OUTFILE.
+   183            DISPLAY "REPORT COMPLETE.".
+   184		  EXIT.Realia COBOL Version 4.000   SN: 01-07732  C:OCCURS.COB 				12DEC25 09:08:18  PAGE	  5
+
+
+
+				    Segment Table
+			Segment    Number     Length	    Name
+
+			  C00	     05        0300	 STUDREP$C00
+			  D00	     06        04C4	 STUDREP$D00
+
+
+			Realia COBOL Compiler Version Information
+
+			      Pass 1	 Version 4.059
+			      Pass 1a	 Version 4.025
+			      Pass 2	 Version 4.059
+			      Pass 2a	 Version 4.024
+			      Pass 3	 Version 4.083
+			      Pass 4	 Version 4.028
+
+
+			Compilation Directives in Effect
+
+				    COMP-4
+				    NODCHK
+				      OPT
+				    NOCALL
+				    NOSUBCHK
+				      STRCHK
+				      ANSITRUNC
+				    NOSMALLCOMP
+				    NODCALL
+				    NODIVZERO
+				    NOEPDCALL
+				      APOST
+				      ASCII
+				      STATABORT
+				      MOVELINK
+				    NOBLL4K
+				      ARGCHK
+				      UPLOW
+				      WRITEAFTER
+				      SOSI
+				      DIALECT-REALIA4
+
+				    ERROR LEVEL LIMIT: W
+
+			Source lines compiled:	     184
+			Compilation time (mm:ss.hh):  0:01.27
+			Compilation speed (lines/minute):  8692
+
+			Compilation date (yy/mm/dd): 25/12/12
+			     Time of day (hh:mm:ss): 09:08:19
+
+			Source length in LST file:000006062

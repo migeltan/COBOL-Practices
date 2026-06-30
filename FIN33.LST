@@ -1,0 +1,270 @@
+     1 IDENTIFICATION DIVISION. 							20JAN26 01:59:25  PAGE	  1
+     2	      PROGRAM-ID. FIN3.
+     3	     *AUTHOR MIGEL H. TAN
+     4	     *DATE-WRITTEN. JANUARY 20, 2026.
+     5	     *DATE-COMPILED. JANUARY 20, 2026.
+     6	     *INSTALLATION. PUP SOUTH WING.
+     7	     *SECURITY. BSIT 2-4 AND DR. FABREGAS.
+     8	     *REMARKS. FINAL PRACTICE 3.
+     9
+    10	      ENVIRONMENT DIVISION.
+    11	      CONFIGURATION SECTION.
+    12	      SOURCE-COMPUTER. IBM-PC.
+    13	      OBJECT-COMPUTER. IBM-PC.
+    14	      INPUT-OUTPUT SECTION.
+    15	      FILE-CONTROL.
+    16            SELECT OUTFILE ASSIGN TO 'FIN33.TXT'.
+    17
+    18	      DATA DIVISION.
+    19	      FILE SECTION.
+    20	      FD OUTFILE.
+    21	      01 PRINT-REC.
+    22		  05 S-SNA PIC X(20).
+    23		  05 S-MNA PIC X(12).
+    24		  05 S-AIRTIME PIC X(15).
+    25		  05 S-TVIEWERS PIC 9(6).
+    26
+    27	      01 DATABASE.
+    28		  05 FILLER PIC X(80).
+    29
+    30	      WORKING-STORAGE SECTION.
+    31	      01 SCO PIC 9 VALUE ZERO.
+    32	      01 SNA PIC X(20) VALUE SPACES.
+    33	      01 MCO PIC 99 VALUE ZERO.
+    34	      01 MNA PIC X(12) VALUE SPACES.
+    35	      01 TCO PIC 9 VALUE ZERO.
+    36	      01 AIRTIME PIC X(15) VALUE SPACES.
+    37	      01 TVIEWERS PIC 9(6) VALUE ZERO.
+    38	      01 EOFSW PIC 9 VALUE ZERO.
+    39	      01 CONT PIC X VALUE SPACES.
+    40
+    41	     *SHOW TABLE - TABLE HANDLING
+    42	      01 SHOW-TABLE.
+    43		  05 SHOW-ENTRY OCCURS 4 TIMES.
+    44		      10 ST-NAME PIC X(20).
+    45		      10 ST-TOTAL-VIEWERS PIC 9(6) VALUE ZERO.
+    46
+    47	     *TRACKING VARIABLES
+    48	      01 MWTV PIC X(25) VALUE SPACES.
+    49	      01 MAX-VIEWERS PIC 9(6) VALUE ZERO.
+    50	      01 MOST-WATCHED-AIRTIME PIC X(15) VALUE SPACES.
+    51	      01 I PIC 9 VALUE ZERO.
+    52
+    53	      SCREEN SECTION.
+    54	      01 SCRE.
+    55		  05 BLANK SCREEN.
+    56
+    57	      PROCEDURE DIVISION.
+    58	      MAIN-RTN.
+    59	     *INITIALIZE SHOW TABLE
+    60            MOVE 'Eat Bulaga' TO ST-NAME(1).    61            MOVE "It's Showtime" TO ST-NAME(2).                                   20JAN26 01:59:25  PAGE    2
+    62            MOVE 'PBB' TO ST-NAME(3).
+    63            MOVE 'Probinsiano' TO ST-NAME(4).
+    64
+    65		  OPEN EXTEND OUTFILE.
+    66		  PERFORM PROCESS-RTN UNTIL EOFSW = 1.
+    67		  CLOSE OUTFILE.
+    68		  PERFORM SUMMARY-RTN.
+    69		  STOP RUN.
+    70
+    71	      PROCESS-RTN.
+    72		  PERFORM HEADING-RTN.
+    73		  PERFORM ACCEPT-RTN.
+    74		  PERFORM NAME-RTN.
+    75		  PERFORM MONTH-RTN THRU MONTH-RTN-END.
+    76		  PERFORM TIME-RTN THRU TIME-RTN-END.
+    77		  PERFORM VIEWERS-RTN.
+    78		  PERFORM CONTINUE-RTN THRU CONTINUE-RTN-END.
+    79		  PERFORM WRITE-RTN.
+    80
+    81	      HEADING-RTN.
+    82		  DISPLAY SCRE.
+    83            DISPLAY "Television's Leading" LINE 2 COLUMN 23.
+    84            DISPLAY "Primetime Shows" LINE 2 COLUMN 44.
+    85            DISPLAY 'ABS-CBN and GMA Network' LINE 3 COLUMN 30.
+    86            DISPLAY ' ' LINE 4.
+    87            DISPLAY ' ' LINE 5.
+    88            DISPLAY 'January-December, 2025 Survey' LINE 6 COLUMN 26.
+    89            DISPLAY ' ' LINE 7.
+    90
+    91	      ACCEPT-RTN.
+    92            DISPLAY 'Show Code: ' LINE 8 COLUMN 10.
+    93		  ACCEPT SCO LINE 8 COLUMN 50.
+    94		  IF SCO < 1 OR SCO > 4
+    95               DISPLAY 'Invalid!' LINE 8 COLUMN 30
+    96		     GO TO ACCEPT-RTN
+    97		  END-IF.
+    98
+    99	      NAME-RTN.
+   100            DISPLAY 'Name of the Show: ' LINE 9 COLUMN 10.
+   101	     *GET NAME FROM TABLE
+   102		  MOVE ST-NAME(SCO) TO SNA.
+   103		  DISPLAY SNA LINE 9 COLUMN 50.
+   104
+   105	      MONTH-RTN.
+   106            DISPLAY 'Month Code: ' LINE 10 COLUMN 10.
+   107		  ACCEPT MCO LINE 10 COLUMN 50.
+   108		  IF MCO < 1 OR MCO > 12
+   109                DISPLAY 'Invalid!' LINE 10 COLUMN 30
+   110		      GO TO MONTH-RTN
+   111		  END-IF.
+   112
+   113		  EVALUATE MCO
+   114		   WHEN 1
+   115             MOVE 'January' TO MNA
+   116		   WHEN 2
+   117             MOVE 'February' TO MNA
+   118		   WHEN 3
+   119             MOVE 'March' TO MNA
+   120		   WHEN 4   121             MOVE 'April' TO MNA                                                  20JAN26 01:59:25  PAGE    3
+   122		   WHEN 5
+   123             MOVE 'May' TO MNA
+   124		   WHEN 6
+   125             MOVE 'June' TO MNA
+   126		   WHEN 7
+   127             MOVE 'July' TO MNA
+   128		   WHEN 8
+   129             MOVE 'August' TO MNA
+   130		   WHEN 9
+   131             MOVE 'September' TO MNA
+   132		   WHEN 10
+   133             MOVE 'October' TO MNA
+   134		   WHEN 11
+   135             MOVE 'November' TO MNA
+   136		   WHEN 12
+   137             MOVE 'December' TO MNA
+   138		  END-EVALUATE.
+   139
+   140            DISPLAY 'Month Name: ' LINE 11 COLUMN 10.
+   141		  DISPLAY MNA LINE 11 COLUMN 50.
+   142	      MONTH-RTN-END.
+   143
+   144	      TIME-RTN.
+   145            DISPLAY 'Time Code: ' LINE 12 COLUMN 10.
+   146		  ACCEPT TCO LINE 12 COLUMN 50.
+   147
+   148		  EVALUATE TCO
+   149		   WHEN 1
+   150             MOVE '1200-2:30 pm' TO AIRTIME
+   151		   WHEN 2
+   152             MOVE '8:00-10:00pm' TO AIRTIME
+   153		   WHEN OTHER
+   154             DISPLAY 'Invalid!' LINE 12 COLUMN 30
+   155		   GO TO TIME-RTN
+   156		  END-EVALUATE.
+   157
+   158            DISPLAY 'Air Time: ' LINE 13 COLUMN 10.
+   159		  DISPLAY AIRTIME LINE 13 COLUMN 50.
+   160	      TIME-RTN-END.
+   161
+   162	      VIEWERS-RTN.
+   163            DISPLAY 'Number of Televiewers: ' LINE 14 COLUMN 10.
+   164		  ACCEPT TVIEWERS LINE 14 COLUMN 50.
+   165
+   166		  IF TVIEWERS < 1
+   167                DISPLAY 'Invalid!' LINE 14 COLUMN 30
+   168		      GO TO VIEWERS-RTN
+   169		  END-IF.
+   170
+   171	      CONTINUE-RTN.
+   172            DISPLAY 'Input Another Record? (Y/N)? ' LINE 17 COLUMN 25.
+   173		  ACCEPT CONT LINE 17 COLUMN 55.
+   174            IF CONT = 'Y' OR CONT = 'y'
+   175		      MOVE 0 TO EOFSW
+   176		  ELSE
+   177                IF CONT = 'N' OR CONT = 'n'
+   178			  MOVE 1 TO EOFSW
+   179		      ELSE
+   180                    DISPLAY 'Invalid!' LINE 17 COLUMN 30   181			  GO TO CONTINUE-RTN						20JAN26 01:59:25  PAGE	  4
+   182		      END-IF
+   183		  END-IF.
+   184	      CONTINUE-RTN-END.
+   185
+   186	      WRITE-RTN.
+   187	     *ACCUMULATE VIEWERS FOR THIS SHOW (TABLE HANDLING)
+   188		  ADD TVIEWERS TO ST-TOTAL-VIEWERS(SCO).
+   189
+   190	     *WRITE TO FILE
+   191		  MOVE SNA TO S-SNA.
+   192		  MOVE MNA TO S-MNA.
+   193		  MOVE AIRTIME TO S-AIRTIME.
+   194		  MOVE TVIEWERS TO S-TVIEWERS.
+   195		  WRITE PRINT-REC.
+   196
+   197	      SUMMARY-RTN.
+   198	     *FIND MOST WATCHED SHOW (LOOP THROUGH TABLE)
+   199		  MOVE 0 TO MAX-VIEWERS.
+   200		  PERFORM VARYING I FROM 1 BY 1 UNTIL I > 4
+   201		      IF ST-TOTAL-VIEWERS(I) > MAX-VIEWERS
+   202			  MOVE ST-TOTAL-VIEWERS(I) TO MAX-VIEWERS
+   203			  MOVE ST-NAME(I) TO MWTV
+   204		      END-IF
+   205		  END-PERFORM.
+   206
+   207	     *DISPLAY RESULTS
+   208		  DISPLAY SCRE.
+   209            DISPLAY 'Most Watched Television Show: ' LINE 19 COLUMN 10.
+   210		  DISPLAY MWTV LINE 19 COLUMN 50.
+   211
+   212            DISPLAY 'Total no. of Televiewers: ' LINE 21 COLUMN 10.
+   213		  DISPLAY MAX-VIEWERS LINE 21 COLUMN 50.
+   214
+   215            DISPLAY 'Air Time: ' LINE 23 COLUMN 10.
+   216		  DISPLAY AIRTIME LINE 23 COLUMN 50.Realia COBOL Version 4.000   SN: 01-07732  C:FIN33.COB					20JAN26 01:59:25  PAGE	  5
+
+LINE ERR# LVL			 ERROR TEXT
+
+   1 0909 W Invalid indicator character ignored in column 07
+   1 0095 E Procedure name 'ICATION' not in PROCEDURE DIVISION
+   1 0115 E Unrecognizable word or literal 'DIVISION'
+   1 0138 W Period assumed before 'DIVISION'
+   1 0115 E Unrecognizable word or literal '.'
+   2 0124 W IDENTIFICATION DIVISION assumed before 'FIN3'
+
+fin33	 has   3 Warning  +   3 E Level  messagesRealia COBOL Version 4.000   SN: 01-07732  C:FIN33.COB					20JAN26 01:59:25  PAGE	  6
+
+                                        
+
+			Realia COBOL Compiler Version Information
+
+			      Pass 1	 Version 4.059
+			      Pass 1a	 Version 4.025
+			      Pass 2	 Version 4.059
+			      Pass 2a	 Version 4.024
+			      Pass 4	 Version 4.028
+
+
+			Compilation Directives in Effect
+
+				    COMP-4
+				    NODCHK
+				      OPT
+				    NOCALL
+				    NOSUBCHK
+				      STRCHK
+				      ANSITRUNC
+				    NOSMALLCOMP
+				    NODCALL
+				    NODIVZERO
+				    NOEPDCALL
+				      APOST
+				      ASCII
+				      STATABORT
+				      MOVELINK
+				    NOBLL4K
+				      ARGCHK
+				      UPLOW
+				      WRITEAFTER
+				      SOSI
+				      DIALECT-REALIA4
+
+				    ERROR LEVEL LIMIT: W
+
+			Source lines compiled:	     216
+			Compilation time (mm:ss.hh):  0:01.15
+			Compilation speed (lines/minute): 11269
+
+			Compilation date (yy/mm/dd): 26/01/20
+			     Time of day (hh:mm:ss): 01:59:26
+
+			Source length in LST file:000007600

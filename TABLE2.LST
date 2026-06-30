@@ -1,0 +1,180 @@
+     1	      IDENTIFICATION DIVISION.							11DEC25 15:53:24  PAGE	  1
+     2	      PROGRAM-ID. TABLE2.
+     3	     *AUTHOR. MIGEL H. TAN.
+     4	     *INSTALLATION. VALENZUELA CITY.
+     5	     *DATE-WRITTEN. DECEMBER 7, 2025.
+     6	     *DATE-COMPILED. DECEMBER 8, 2025.
+     7	     *SECURITY. BSIT 2-4.
+     8	     *REMARKS. 2-DIMENSIONAL TABLE HANDLING PAGE 83.
+     9
+    10	      ENVIRONMENT DIVISION.
+    11	      CONFIGURATION SECTION.
+    12	      SOURCE-COMPUTER. IBM-PC.
+    13	      OBJECT-COMPUTER. IBM-PC.
+    14
+    15	      INPUT-OUTPUT SECTION.
+    16	      FILE-CONTROL.
+    17            SELECT STUDENT ASSIGN TO "TABIN.TXT"
+    18		      ORGANIZATION IS SEQUENTIAL.
+    19            SELECT OUTFILE ASSIGN TO "TABOUT"
+    20		      ORGANIZATION IS SEQUENTIAL.
+    21
+    22	      DATA DIVISION.
+    23	      FILE SECTION.
+    24
+    25	      FD STUDENT
+    26		  LABEL RECORD IS STANDARD
+    27		  DATA RECORD IS INREC.
+    28	      01 INREC.
+    29		  05 F-COURSE PIC X(4).
+    30		  05 F-YEAR   PIC 9.
+    31		  05 F-COUNT  PIC 9(3).
+    32
+    33	      FD OUTFILE
+    34		  LABEL RECORD IS OMITTED
+    35		  DATA RECORD IS OUTREC.
+    36	      01 OUTREC PIC X(80).
+    37
+    38	      WORKING-STORAGE SECTION.
+    39
+    40	      01 EOFSW PIC 9 VALUE 0.
+    41	      01 COURSE-TABLE.
+    42		  05 COURSE OCCURS 2 TIMES.
+    43		      10 YR OCCURS 4 TIMES PIC 9(4).
+    44
+    45	      01 I PIC 9.
+    46	      01 J PIC 9.
+    47	      01 TEMP PIC 9(5).
+    48
+    49	      01 OUT-WS.
+    50		  05 OUT-YEAR  PIC X(10).
+    51		  05 OUT-BSIT  PIC X(5).
+    52		  05 OUT-BSCS  PIC X(5).
+    53		  05 OUT-TOTAL PIC X(5).
+    54
+    55	      01 WS-NUM PIC 9(5).
+    56	      01 WS-STR PIC X(5).
+    57
+    58	      PROCEDURE DIVISION.
+    59
+    60	      MAIN-RTN.    61		  OPEN INPUT STUDENT							11DEC25 15:53:24  PAGE	  2
+    62		       OUTPUT OUTFILE
+    63
+    64		  PERFORM READ-RTN
+    65
+    66		  PERFORM UNTIL EOFSW = 1
+    67		      PERFORM STORE-RTN
+    68		      PERFORM READ-RTN
+    69		  END-PERFORM
+    70
+    71		  PERFORM PRINT-RTN
+    72
+    73		  CLOSE STUDENT OUTFILE
+    74		  STOP RUN.
+    75
+    76	      READ-RTN.
+    77		  READ STUDENT
+    78		      AT END MOVE 1 TO EOFSW
+    79		  END-READ.
+    80
+    81	      STORE-RTN.
+    82            IF F-COURSE = "BSIT"
+    83		      MOVE 1 TO I
+    84		  ELSE
+    85		      MOVE 2 TO I
+    86		  END-IF
+    87
+    88		  MOVE F-COUNT TO YR(I, F-YEAR).
+    89
+    90	      PRINT-RTN.
+    91            MOVE "YEAR        BSIT       BSCS       TOTAL" TO OUTREC
+    92		  WRITE OUTREC
+    93
+    94		  PERFORM VARYING J FROM 1 BY 1 UNTIL J > 4
+    95		      MOVE SPACES TO OUTREC
+    96
+    97		      EVALUATE J
+    98                    WHEN 1 MOVE "FRESHMAN " TO OUT-YEAR
+    99                    WHEN 2 MOVE "SOPHOMORE" TO OUT-YEAR
+   100                    WHEN 3 MOVE "JUNIOR   " TO OUT-YEAR
+   101                    WHEN 4 MOVE "SENIOR   " TO OUT-YEAR
+   102		      END-EVALUATE
+   103
+   104		      MOVE YR(1, J) TO WS-NUM
+   105		      MOVE WS-NUM TO WS-STR
+   106		      MOVE WS-STR TO OUT-BSIT
+   107
+   108		      MOVE YR(2, J) TO WS-NUM
+   109		      MOVE WS-NUM TO WS-STR
+   110		      MOVE WS-STR TO OUT-BSCS
+   111
+   112		      COMPUTE TEMP = YR(1, J) + YR(2, J)
+   113		      MOVE TEMP TO WS-NUM
+   114		      MOVE WS-NUM TO WS-STR
+   115		      MOVE WS-STR TO OUT-TOTAL
+   116
+   117		      STRING OUT-YEAR DELIMITED BY SIZE
+   118                       "  " DELIMITED BY SIZE
+   119			     OUT-BSIT DELIMITED BY SIZE
+   120                       "      " DELIMITED BY SIZE   121			     OUT-BSCS DELIMITED BY SIZE 				11DEC25 15:53:24  PAGE	  3
+   122                       "      " DELIMITED BY SIZE
+   123			     OUT-TOTAL DELIMITED BY SIZE
+   124			     INTO OUTREC
+   125		      END-STRING
+   126
+   127		      WRITE OUTREC
+   128		  END-PERFORM.Realia COBOL Version 4.000   SN: 01-07732  C:TABLE2.COB 				11DEC25 15:53:24  PAGE	  4
+
+
+
+				    Segment Table
+			Segment    Number     Length	    Name
+
+			  C00	     05        02C0	 TABLE2$C00
+			  D00	     06        02DE	 TABLE2$D00
+
+
+			Realia COBOL Compiler Version Information
+
+			      Pass 1	 Version 4.059
+			      Pass 1a	 Version 4.025
+			      Pass 2	 Version 4.059
+			      Pass 2a	 Version 4.024
+			      Pass 3	 Version 4.083
+			      Pass 4	 Version 4.028
+
+
+			Compilation Directives in Effect
+
+				    COMP-4
+				    NODCHK
+				      OPT
+				    NOCALL
+				    NOSUBCHK
+				      STRCHK
+				      ANSITRUNC
+				    NOSMALLCOMP
+				    NODCALL
+				    NODIVZERO
+				    NOEPDCALL
+				      APOST
+				      ASCII
+				      STATABORT
+				      MOVELINK
+				    NOBLL4K
+				      ARGCHK
+				      UPLOW
+				      WRITEAFTER
+				      SOSI
+				      DIALECT-REALIA4
+
+				    ERROR LEVEL LIMIT: W
+
+			Source lines compiled:	     128
+			Compilation time (mm:ss.hh):  0:01.27
+			Compilation speed (lines/minute):  6047
+
+			Compilation date (yy/mm/dd): 25/12/11
+			     Time of day (hh:mm:ss): 15:53:25
+
+			Source length in LST file:000003987

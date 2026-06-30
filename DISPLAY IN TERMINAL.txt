@@ -1,0 +1,77 @@
+DISPLAY IN TERMINAL:
+                        PUP
+                       CCIS
+                     (2 spaces)
+
+Student Number:	9(5)
+Student Name:	x(25)
+Course:		1 or 2
+Year & Section:	x(5)
+Student Type:	1 or 2
+Midterm Grade:	9v99
+Final Grade:	9v99
+Average:	9v99
+Remarks:	Passed/Failed
+
+Enter Another Record (Y/N):
+
+REQUIREMENTS:
+Stops input once N. Use EOFSW
+1 FOR BSIT 2 FOR BSCS (NO NEED TO USE BSIT OR BSCS JUST 1 OR 2)
+1 FOR REGULAR 2 FOR IRREGULAR (NO NEED TO USE BSIT OR BSCS JUST 1 OR 2)
+DECIMAL POINT FOR MIDTERM AND FINAL GRADE (1.25, 1.15)
+AVERAGE IS COMPUTE MIDTERM AND FINAL
+CONDITION FOR REMARK:
+IF AVERAGE IS MORE THAN 3.00 = FAILED
+ELSE AVERAGE IS PASSED
+CONDITION FOR ANOTHER RECORD (Y/N)
+BEFORE ACCEPTING I WILL SEE ALL THE DISPLAY, THEN I CAN INPUT
+
+PSEUDOCODE:
+Use ACCEPT AND DISPLAY
+DISPLAY 'PUP' LINE 1 COLUMN 24.
+DISPLAY 'CCIS' LINE 2 COLUMN 23.
+
+ACCEPT SNO LINE 5 COLUMN 2.
+
+...
+
+IF AVERAGE IS MORE THAN 3.00 = FAILED
+ELSE AVERAGE IS PASSED
+
+
+
+
+ASSIGNMENT:
+Ung Enhancement pala is kailangan 
+Ma-save sya sa output file
+
+Para lang syang Database ganun
+
+Tsaka validation na din sa lahat dapat mag take lang 1 or 2 sa course and student type. 
+Hanggang 5 lang ung grades na eh lalagay
+
+Plus points din daw kung malalagyan natin ng point ung average ng grade
+
+Example:
+1.75,  2.25,  5.00 etc..
+
+EVERY VALUE SHOULD BE SAVED AT THE OUTPUT FILE.
+DO VALIDATIONS IF NEEDED
+
+CONCEPT I WANNA SEE (PSEUDOCODE):
+
+SELECT OUTREC ... (RECORD)
+
+OPEN FILE.
+PERFORM INPUT UNTIL INPUT ...
+CLOSE FILE.
+
+MOVE SNO TO SSNO
+MOVE THE REST...
+
+WRITE OUTREC.
+(SIMPLY STORES THATS WHY NO AFTER)
+
+THEN, ENTER ANOTHER RECORD (Y/N)
+

@@ -1,0 +1,328 @@
+     1	      IDENTIFICATION DIVISION.							28JAN26 01:06:06  PAGE	  1
+     2	      PROGRAM-ID. FINALS.
+     3	     *AUTHOR. MIGEL H. TAN.
+     4	     *DATE-WRITTEN. JANUARY 20, 2026.
+     5	     *DATE-COMPILED. JANUARY 20, 2026.
+     6	     *INSTALLATION. PUP SOUTH WING.
+     7	     *SECURITY. BSIT 2-4 AND DR. ALETA.
+     8	     *REMARKS. FINALS.
+     9
+    10	      ENVIRONMENT DIVISION.
+    11	      CONFIGURATION SECTION.
+    12	      SOURCE-COMPUTER. IBM-PC.
+    13	      OBJECT-COMPUTER. IBM-PC.
+    14	      INPUT-OUTPUT SECTION.
+    15	      FILE-CONTROL.
+    16            SELECT OUTFILE ASSIGN TO "TAN.TXT".
+    17
+    18	      DATA DIVISION.
+    19	      FILE SECTION.
+    20	      FD OUTFILE.
+    21	      01 PRINT-REC.
+    22		  05 S-ENO PIC 9(10).
+    23		  05 S-ENA PIC X(25).
+    24		  05 S-DOB PIC X(20).
+    25		  05 S-UNA PIC X(5).
+    26		  05 S-CNA PIC X(5).
+    27		  05 S-REM PIC X(6).
+    28	      01 DATABASE.
+    29		  02 FILLER PIC X(80).
+    30
+    31	      WORKING-STORAGE SECTION.
+    32	      01 ENO PIC 9(10) VALUE ZERO.
+    33	      01 ENA PIC X(25) VALUE SPACES.
+    34	      01 DOB PIC X(20) VALUE SPACES.
+    35	      01 UNC PIC 9 VALUE ZERO.
+    36	      01 UNA PIC X(5) VALUE SPACES.
+    37	      01 CC PIC 9 VALUE ZERO.
+    38	      01 CNA PIC X(4) VALUE SPACES.
+    39	      01 TOTITEMS PIC 9(3) VALUE ZERO.
+    40	      01 TESTR PIC 99 VALUE ZERO.
+    41	      01 REM PIC X(6).
+    42	      01 RAVERAGE PIC 9(2)V99 VALUE ZERO.
+    43	      01 EOFSW PIC 9 VALUE ZERO.
+    44	      01 ANOTHER PIC X VALUE SPACES.
+    45
+    46	     *TOTAL
+    47	      01 TOTPASSED PIC 99 VALUE ZERO.
+    48	      01 TOTFAILED PIC 99 VALUE ZERO.
+    49	      01 LARPAS PIC X(5) VALUE SPACES.
+    50
+    51	     *UPASS TRACK
+    52	      01 UP-PASSED PIC 99 VALUE ZERO.
+    53	      01 PUP-PASSED PIC 99 VALUE ZERO.
+    54	      01 DLSU-PASSED PIC 99 VALUE ZERO.
+    55	      01 ADMU-PASSED PIC 99 VALUE ZERO.
+    56	      01 MAPUA-PASSED PIC 99 VALUE ZERO.
+    57	      01 MAX-PASSED PIC 99 VALUE ZERO.
+    58
+    59	      SCREEN SECTION.
+    60	      01 SCRE.    61		  02 BLANK SCREEN.							28JAN26 01:06:06  PAGE	  2
+    62
+    63	      PROCEDURE DIVISION.
+    64	      MAIN-RTN.
+    65
+    66		  OPEN EXTEND OUTFILE.
+    67		  PERFORM PROCESS-RTN UNTIL EOFSW = 1.
+    68		  CLOSE OUTFILE.
+    69		  STOP RUN.
+    70
+    71	      PROCESS-RTN.
+    72		  PERFORM HEADING-RTN.
+    73		  PERFORM ACCEPT-RTN.
+    74		  PERFORM UNI-RTN.
+    75		  PERFORM CC-RTN.
+    76		  PERFORM TOTAL-RTN.
+    77		  PERFORM TEST-RTN.
+    78		  PERFORM REM-RTN.
+    79		  PERFORM CON-RTN.
+    80		  PERFORM SUMMARY-RTN.
+    81		  PERFORM WRITE-RTN.
+    82
+    83	      HEADING-RTN.
+    84		  DISPLAY SCRE.
+    85            DISPLAY ' ' LINE 1.
+    86            DISPLAY 'Professional Regulation' LINE 2 COLUMN 23
+    87            DISPLAY 'Commission' LINE 2 COLUMN 47.
+    88            DISPLAY ' ' LINE 3 COLUMN 40.
+    89            DISPLAY ' ' LINE 4 COLUMN 40.
+    90            DISPLAY 'IT Professional Board ' LINE 5 COLUMN 23.
+    91            DISPLAY 'Exam Results' LINE 5 COLUMN 45.
+    92            DISPLAY '2013' LINE 6 COLUMN 38.
+    93
+    94	      ACCEPT-RTN.
+    95            DISPLAY 'Examinee Number' LINE 8 COLUMN 10.
+    96		  ACCEPT ENO LINE 8 COLUMN 50.
+    97
+    98            DISPLAY 'Examinee Name: ' LINE 9 COLUMN 10.
+    99		  ACCEPT ENA LINE 9 COLUMN 50.
+   100
+   101            DISPLAY 'Date of Birth: ' LINE 10 COLUMN 10.
+   102		  ACCEPT DOB LINE 10 COLUMN 50.
+   103
+   104	      UNI-RTN.
+   105            DISPLAY 'University Code: ' LINE 11 COLUMN 10.
+   106		  ACCEPT UNC LINE 11 COLUMN 50.
+   107		  EVALUATE UNC
+   108		   WHEN 1
+   109             MOVE 'UP' TO UNA
+   110		   WHEN 2
+   111             MOVE 'PUP' TO UNA
+   112		   WHEN 3
+   113             MOVE 'DLSU' TO UNA
+   114		   WHEN 4
+   115             MOVE 'ADMU' TO UNA
+   116		   WHEN 5
+   117             MOVE 'MAPUA' TO UNA
+   118		   WHEN OTHER
+   119             DISPLAY '1-5 Only!' LINE 11 COLUMN 40
+   120		   GO TO UNI-RTN   121		  END-EVALUATE. 							28JAN26 01:06:06  PAGE	  3
+   122
+   123            DISPLAY 'University Name: ' LINE 12 COLUMN 10.
+   124		  DISPLAY UNA LINE 12 COLUMN 50.
+   125
+   126	      CC-RTN.
+   127            DISPLAY 'Course Code: ' LINE 13 COLUMN 10.
+   128		  ACCEPT CC LINE 13 COLUMN 50.
+   129		  EVALUATE CC
+   130		   WHEN 1
+   131             MOVE 'BSIT' TO CNA
+   132		   WHEN 2
+   133             MOVE 'BSCS' TO CNA
+   134		   WHEN 3
+   135             MOVE 'BSIS' TO CNA
+   136		   WHEN OTHER
+   137             DISPLAY '1-3 Only!' LINE 13 COLUMN 40
+   138		   GO TO CC-RTN
+   139		  END-EVALUATE.
+   140
+   141            DISPLAY 'Course Name: ' LINE 14 COLUMN 10.
+   142		  DISPLAY CNA LINE 14 COLUMN 50.
+   143
+   144	      TOTAL-RTN.
+   145            DISPLAY 'Total No. of Items: ' LINE 15 COLUMN 10.
+   146		  ACCEPT TOTITEMS LINE 15 COLUMN 50.
+   147		  IF TOTITEMS < 1 OR TOTITEMS > 100
+   148            DISPLAY '1-100 Only!' LINE 15 COLUMN 35
+   149		  GO TO TOTAL-RTN
+   150		  END-IF.
+   151
+   152	      TEST-RTN.
+   153            DISPLAY 'Test Result (Score): ' LINE 16 COLUMN 10.
+   154		  ACCEPT TESTR LINE 16 COLUMN 50.
+   155		  IF TESTR IS LESS THAN 1 OR TESTR GREATER THAN TOTITEMS
+   156                DISPLAY '1-100 Only!' LINE 16 COLUMN 35
+   157		      GO TO TEST-RTN
+   158		      END-IF.
+   159
+   160	      REM-RTN.
+   161            DISPLAY 'Remarks: ' LINE 17 COLUMN 10.
+   162		  COMPUTE RAVERAGE = (TESTR / TOTITEMS) * 100
+   163
+   164		  IF CC = 1 AND RAVERAGE IS GREATER THAN OR EQUAL 60
+   165            MOVE 'PASSED' TO REM
+   166		  ADD 1 TO TOTPASSED
+   167		  EVALUATE UNC
+   168		   WHEN 1 ADD 1 TO UP-PASSED
+   169		   WHEN 2 ADD 1 TO PUP-PASSED
+   170		   WHEN 3 ADD 1 TO DLSU-PASSED
+   171		   WHEN 4 ADD 1 TO ADMU-PASSED
+   172		   WHEN 5 ADD 1 TO MAPUA-PASSED
+   173		  END-EVALUATE
+   174		   ELSE IF CC = 1 AND RAVERAGE IS LESS THAN 60
+   175             MOVE 'FAILED' TO REM
+   176		   ADD 1 TO TOTFAILED
+   177		  END-IF.
+   178
+   179		   IF CC = 2 AND RAVERAGE IS GREATER THAN OR EQUAL 70
+   180            MOVE 'PASSED' TO REM   181		  ADD 1 TO TOTPASSED							28JAN26 01:06:06  PAGE	  4
+   182		  EVALUATE UNC
+   183		   WHEN 1 ADD 1 TO UP-PASSED
+   184		   WHEN 2 ADD 1 TO PUP-PASSED
+   185		   WHEN 3 ADD 1 TO DLSU-PASSED
+   186		   WHEN 4 ADD 1 TO ADMU-PASSED
+   187		   WHEN 5 ADD 1 TO MAPUA-PASSED
+   188		  END-EVALUATE
+   189		  ELSE IF CC = 2 AND RAVERAGE IS LESS THAN 70
+   190            MOVE 'FAILED' TO REM
+   191		  ADD 1 TO TOTFAILED
+   192		   END-IF.
+   193
+   194		  IF CC = 3 AND RAVERAGE IS GREATER THAN OR EQUAL 50
+   195            MOVE 'PASSED' TO REM
+   196		  ADD 1 TO TOTPASSED
+   197		   EVALUATE UNC
+   198		   WHEN 1 ADD 1 TO UP-PASSED
+   199		   WHEN 2 ADD 1 TO PUP-PASSED
+   200		   WHEN 3 ADD 1 TO DLSU-PASSED
+   201		   WHEN 4 ADD 1 TO ADMU-PASSED
+   202		   WHEN 5 ADD 1 TO MAPUA-PASSED
+   203		  END-EVALUATE
+   204		  ELSE IF CC = 3 AND RAVERAGE IS LESS THAN 50
+   205            MOVE 'FAILED' TO REM
+   206		   ADD 1 TO TOTFAILED
+   207		  END-IF.
+   208
+   209		   DISPLAY REM LINE 17 COLUMN 50.
+   210
+   211		  EVALUATE UNC
+   212		  WHEN 1 ADD 1 TO UP-PASSED
+   213		  WHEN 2 ADD 1 TO PUP-PASSED
+   214		  WHEN 3 ADD 1 TO DLSU-PASSED
+   215		  WHEN 4 ADD 1 TO ADMU-PASSED
+   216		  WHEN 5 ADD 1 TO MAPUA-PASSED
+   217		  END-EVALUATE
+   218
+   219		  DISPLAY REM LINE 17 COLUMN 50.
+   220
+   221	      CON-RTN.
+   222            DISPLAY 'Input Another Record? (Y/N): ' LINE 19 COLUMN 26.
+   223		  ACCEPT ANOTHER LINE 19 COLUMN 55.
+   224            IF ANOTHER = 'Y' OR ANOTHER = 'y'
+   225		  MOVE 0 TO EOFSW
+   226		  MOVE SPACES TO REM
+   227		      ELSE
+   228                IF ANOTHER = 'N' OR ANOTHER = 'n'
+   229		      MOVE 1 TO EOFSW
+   230			ELSE
+   231                  DISPLAY 'Y or N only!' LINE 18 COLUMN 32
+   232			GO TO CON-RTN
+   233		     END-IF
+   234		  END-IF.
+   235
+   236	      SUMMARY-RTN.
+   237            DISPLAY 'Total No. of Passed: ' LINE 21 COLUMN 10.
+   238		  DISPLAY TOTPASSED LINE 21 COLUMN 37.
+   239
+   240            DISPLAY 'Total No. of Failed: ' LINE 22 COLUMN 10.   241		  DISPLAY TOTFAILED LINE 22 COLUMN 37.					28JAN26 01:06:06  PAGE	  5
+   242            DISPLAY ' ' LINE 23 COLUMN 37.
+   243
+   244
+   245            DISPLAY 'School with Largest' LINE 24 COLUMN 10
+   246            DISPLAY 'no. of Passed: ' LINE 24 COLUMN 30.
+   247		  MOVE UP-PASSED TO MAX-PASSED
+   248            MOVE 'UP' TO LARPAS
+   249		  IF PUP-PASSED > MAX-PASSED
+   250		  MOVE PUP-PASSED TO MAX-PASSED
+   251            MOVE 'PUP' TO LARPAS
+   252		  END-IF
+   253
+   254		  IF DLSU-PASSED > MAX-PASSED
+   255		  MOVE DLSU-PASSED TO MAX-PASSED
+   256            MOVE 'DLSU' TO LARPAS
+   257		  END-IF
+   258
+   259		  IF ADMU-PASSED > MAX-PASSED
+   260		  MOVE ADMU-PASSED TO MAX-PASSED
+   261            MOVE 'ADMU' TO LARPAS
+   262		  END-IF
+   263
+   264		  IF MAPUA-PASSED > MAX-PASSED
+   265		  MOVE MAPUA-PASSED TO MAX-PASSED
+   266            MOVE 'MAPUA' TO LARPAS
+   267		  END-IF
+   268
+   269		  DISPLAY LARPAS LINE 26 COLUMN 56.
+   270
+   271	      WRITE-RTN.
+   272		  MOVE ENO TO S-ENO.
+   273		  MOVE ENA TO S-ENA.
+   274		  MOVE DOB TO S-DOB.
+   275		  MOVE UNA TO S-UNA.
+   276		  MOVE CNA TO S-CNA.
+   277		  MOVE REM TO S-REM.
+   278		  WRITE PRINT-REC.Realia COBOL Version 4.000   SN: 01-07732  C:FINALS.COB 				28JAN26 01:06:06  PAGE	  6
+
+
+
+				    Segment Table
+			Segment    Number     Length	    Name
+
+			  C00	     05        129F	 FINALS$C00
+			  D00	     06        045C	 FINALS$D00
+
+
+			Realia COBOL Compiler Version Information
+
+			      Pass 1	 Version 4.059
+			      Pass 1a	 Version 4.025
+			      Pass 2	 Version 4.059
+			      Pass 2a	 Version 4.024
+			      Pass 3	 Version 4.083
+			      Pass 4	 Version 4.028
+
+
+			Compilation Directives in Effect
+
+				    COMP-4
+				    NODCHK
+				      OPT
+				    NOCALL
+				    NOSUBCHK
+				      STRCHK
+				      ANSITRUNC
+				    NOSMALLCOMP
+				    NODCALL
+				    NODIVZERO
+				    NOEPDCALL
+				      APOST
+				      ASCII
+				      STATABORT
+				      MOVELINK
+				    NOBLL4K
+				      ARGCHK
+				      UPLOW
+				      WRITEAFTER
+				      SOSI
+				      DIALECT-REALIA4
+
+				    ERROR LEVEL LIMIT: W
+
+			Source lines compiled:	     278
+			Compilation time (mm:ss.hh):  0:02.14
+			Compilation speed (lines/minute):  7794
+
+			Compilation date (yy/mm/dd): 26/01/28
+			     Time of day (hh:mm:ss): 01:06:08
+
+			Source length in LST file:000009640

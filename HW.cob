@@ -1,10 +1,10 @@
        IDENTIFICATION DIVISION.
-       PROGRAM-ID. HW1.
+       PROGRAM-ID. HW.
       *AUTHOR. MIGEL H. TAN.
       *INSTALLATION. VALENZUELA CITY.
-      *DATE-WRITTEN. NOVEMBER 21, 2025.
+      *DATE-WRITTEN. NOVEMBER 19, 2025.
       *DATE-COMPILED. NOVEMBER 21, 2025.
-      *REMARKS. HOMEWORK/SEATWORK PAGE 93 ENHANCED.
+      *REMARKS. SEATWORK NO. 2.
 
        ENVIRONMENT DIVISION.
        CONFIGURATION SECTION.
@@ -13,8 +13,8 @@
 
        INPUT-OUTPUT SECTION.
        FILE-CONTROL.
-           SELECT INFILE  ASSIGN TO "TRANSWVALID.txt".
-           SELECT OUTFILE ASSIGN TO "REPORT2".
+           SELECT INFILE  ASSIGN TO "TRANS.txt".
+           SELECT OUTFILE ASSIGN TO "REPORT".
 
        DATA DIVISION.
        FILE SECTION.
@@ -46,8 +46,6 @@
        01 GRAND-BALANCE  PIC S9(10)V99 VALUE 0.
        01 REC-COUNT      PIC 9(2) VALUE 0.
 
-       01 PAGE-COUNT     PIC 9(2) VALUE 0.
-
        01 HEAD-1.
            02 FILLER PIC X(30) VALUE SPACES.
            02 FILLER PIC X(20) VALUE "China Trust Bank".
@@ -59,9 +57,9 @@
            02 FILLER PIC X(34) VALUE SPACES.
 
        01 HEAD-3.
-           02 FILLER PIC X(33) VALUE SPACES.
+           02 FILLER PIC X(32) VALUE SPACES.
            02 FILLER PIC X(12) VALUE "Makati City".
-           02 FILLER PIC X(35) VALUE SPACES.
+           02 FILLER PIC X(36) VALUE SPACES.
 
        01 SUBHEAD-1.
            02 FILLER PIC X(30) VALUE SPACES.
@@ -144,9 +142,6 @@
            WRITE OUTREC FROM SUBHEAD-2 AFTER 2.
            WRITE OUTREC FROM SUBHEAD-3 AFTER 1.
 
-           MOVE 0 TO PAGE-COUNT.
-
-
        PROCESS-RTN.
            DISPLAY SCRE.
 
@@ -159,10 +154,8 @@
            END-IF
 
            IF TC = "W"
-               PERFORM WITHDRAW-RTN
-
+               COMPUTE WS-BALANCE = WS-BALANCE - TAMT
            END-IF
-
 
            ADD 1 TO REC-COUNT.
 
@@ -172,18 +165,7 @@
                    PERFORM BREAK-RTN
            END-READ.
 
-       WITHDRAW-RTN.
-           COMPUTE WS-BALANCE = WS-BALANCE - TAMT
-           IF TAMT IS GREATER THAN WS-BALANCE
-               DISPLAY "INVALID."
-           END-IF.
-
-
        BREAK-RTN.
-           IF PAGE-COUNT = 10
-               PERFORM HEADING-RTN
-           END-IF
-
            MOVE HOLD-ACC-NO   TO P-ANO.
            MOVE HOLD-ACC-NAME TO P-ANA.
            MOVE WS-BALANCE    TO P-BAL.
@@ -192,7 +174,6 @@
 
            ADD WS-BALANCE TO GRAND-BALANCE.
            MOVE 0 TO WS-BALANCE.
-           ADD 1 TO PAGE-COUNT.
 
            MOVE ANO TO HOLD-ACC-NO.
            MOVE ANA TO HOLD-ACC-NAME.

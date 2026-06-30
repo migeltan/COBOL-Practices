@@ -1,0 +1,141 @@
+     1	      IDENTIFICATION DIVISION.							09JAN26 20:46:02  PAGE	  1
+     2	      PROGRAM-ID. SWT2.
+     3	     *AUTHOR. MIGEL TAN.
+     4	     *INSTALLATION. VALENZUELA CITY.
+     5	     *DATE-WRITTEN. JANUARY 9, 2025.
+     6	     *DATE-COMPILED. JANUARY 9, 2025.
+     7	     *SECURITY. BSIT 2-4 AND DR. FABREGAS.
+     8	     *REMARKS. DISP AND ACC.
+     9
+    10	      ENVIRONMENT DIVISION.
+    11	      CONFIGURATION SECTION.
+    12	      SOURCE-COMPUTER. IBM-PC.
+    13	      OBJECT-COMPUTER. IBM-PC.
+    14
+    15	      DATA DIVISION.
+    16	      WORKING-STORAGE SECTION.
+    17	      01  SNO PIC X(5) VALUE SPACES.
+    18	      01  SNA PIC X(25) VALUE SPACES.
+    19	      01  CC PIC 9 VALUE ZERO.
+    20	      01  YRSEC PIC X(5) VALUE SPACES.
+    21	      01  STYPE PIC 9 VALUE ZERO.
+    22	      01  MG PIC 9V99 VALUE ZERO.
+    23	      01  FG PIC 9V99 VALUE ZERO.
+    24	      01  AVE PIC 9V99 VALUE ZERO.
+    25	      01  REM-I PIC X(6) VALUE SPACES.
+    26	      01  DEC PIC X VALUE SPACES.
+    27	      01  INDICATOR PIC 9 VALUE ZERO.
+    28	      01  AVE-R PIC 9.999 VALUE ZERO.
+    29
+    30	      SCREEN SECTION.
+    31	      01  SCRE.
+    32		  02 BLANK SCREEN.
+    33
+    34	      PROCEDURE DIVISION.
+    35	      MAIN-RTN.
+    36		  PERFORM INPUT-RTN UNTIL INDICATOR = 1.
+    37		  STOP RUN.
+    38
+    39	      INPUT-RTN.
+    40		  DISPLAY SCRE.
+    41            DISPLAY 'PUP' LINE 1 COLUMN 40.
+    42            DISPLAY 'CCIS' LINE 2 COLUMN 40.
+    43
+    44            DISPLAY 'Student Number: ' LINE 5 COLUMN 10.
+    45		  ACCEPT SNO LINE 5 COLUMN 50.
+    46
+    47            DISPLAY 'Student Name: ' LINE 6 COLUMN 10.
+    48		  ACCEPT SNA LINE 6 COLUMN 50.
+    49
+    50            DISPLAY 'Course: ' LINE 7 COLUMN 10.
+    51		  ACCEPT CC LINE 7 COLUMN 50.
+    52
+    53            DISPLAY 'Year & Section: ' LINE 8 COLUMN 10.
+    54		  ACCEPT YRSEC LINE 8 COLUMN 50.
+    55
+    56            DISPLAY 'Student Type: ' LINE 9 COLUMN 10.
+    57		  ACCEPT STYPE LINE 9 COLUMN 50.
+    58
+    59            DISPLAY 'Midterm Grade: ' LINE 10 COLUMN 10.
+    60		  ACCEPT MG LINE 10 COLUMN 50.    61											09JAN26 20:46:02  PAGE	  2
+    62            DISPLAY 'Final Grade: ' LINE 11 COLUMN 10.
+    63		  ACCEPT FG LINE 11 COLUMN 50.
+    64
+    65		  COMPUTE AVE = (MG + FG) / 2.
+    66		  MOVE AVE TO AVE-R.
+    67
+    68            DISPLAY 'Average: ' LINE 12 COLUMN 10.
+    69		  DISPLAY AVE-R LINE 12 COLUMN 50.
+    70
+    71		  IF AVE > 3.00
+    72                MOVE "FAILED" TO REM-I
+    73		  ELSE
+    74                MOVE "PASSED" TO REM-I
+    75		  END-IF.
+    76
+    77            DISPLAY 'Remarks: ' LINE 13 COLUMN 10.
+    78		  DISPLAY REM-I LINE 13 COLUMN 50.
+    79
+    80            DISPLAY "Enter Another Record (Y/N): " LINE 15 COLUMN 10.
+    81		  ACCEPT DEC LINE 15 COLUMN 50.
+    82
+    83            IF DEC IS = 'Y'
+    84		      MOVE 0 TO AVE
+    85		      MOVE SPACES TO REM-I
+    86            ELSE IF DEC IS = 'N'
+    87		      MOVE 1 TO INDICATOR
+    88		  END-IF.Realia COBOL Version 4.000   SN: 01-07732  C:STW2.COB					09JAN26 20:46:02  PAGE	  3
+
+
+
+				    Segment Table
+			Segment    Number     Length	    Name
+
+			  C00	     05        0766	 SWT2$C00
+			  D00	     06        0209	 SWT2$D00
+
+
+			Realia COBOL Compiler Version Information
+
+			      Pass 1	 Version 4.059
+			      Pass 1a	 Version 4.025
+			      Pass 2	 Version 4.059
+			      Pass 2a	 Version 4.024
+			      Pass 3	 Version 4.083
+			      Pass 4	 Version 4.028
+
+
+			Compilation Directives in Effect
+
+				    COMP-4
+				    NODCHK
+				      OPT
+				    NOCALL
+				    NOSUBCHK
+				      STRCHK
+				      ANSITRUNC
+				    NOSMALLCOMP
+				    NODCALL
+				    NODIVZERO
+				    NOEPDCALL
+				      APOST
+				      ASCII
+				      STATABORT
+				      MOVELINK
+				    NOBLL4K
+				      ARGCHK
+				      UPLOW
+				      WRITEAFTER
+				      SOSI
+				      DIALECT-REALIA4
+
+				    ERROR LEVEL LIMIT: W
+
+			Source lines compiled:	      88
+			Compilation time (mm:ss.hh):  0:01.20
+			Compilation speed (lines/minute):  4400
+
+			Compilation date (yy/mm/dd): 26/01/09
+			     Time of day (hh:mm:ss): 20:46:02
+
+			Source length in LST file:000003108

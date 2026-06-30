@@ -1,0 +1,16 @@
+1BSCS 2021-00001Juan Dela Cruz           
+1BSCS 2021-00002Maria Santos             
+1BSIT 2024-01755Migel Tan          
+1BSIT 2021-00004Ana Reyes                
+2BSCS 2020-00005Carlos Garcia            
+2BSCS 2020-00006Rosa Martinez            
+2BSIT 2020-00007Jose Rizal               
+2BSIT 2020-00008Andres Bonifacio         
+3BSCS 2019-00009Emilio Aguinaldo         
+3BSCS 2019-00010Apolinario Mabini        
+3BSIT 2019-00011Diego Silang             
+3BSIT 2019-00012Gabriela Silang          
+4BSCS 2018-00013Melchora Aquino          
+4BSCS 2018-00014Tandang Sora             
+4BSIT 2018-00015Lapu Lapu                
+4BSIT 2018-00016Rajah Sulayman

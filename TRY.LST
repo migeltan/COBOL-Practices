@@ -1,0 +1,256 @@
+     1	      IDENTIFICATION DIVISION.							04MAR26 23:47:46  PAGE	  1
+     2	      PROGRAM-ID. TRY.
+     3	     *AUTHOR. MIGEL H. TAN.
+     4	     *DATE-WRITTEN. MARCH 4, 2026.
+     5	     *DATE-COMPILED. MARCH 4, 2026.
+     6	     *INSTALLATION. PUP, STA. MESA.
+     7	     *SECURITY. BSIT 2-4 AND DR. ALETA FABREGAS.
+     8	     *REMARKS. NAMISS KO MAG-COBOL.
+     9
+    10	      ENVIRONMENT DIVISION.
+    11	      CONFIGURATION SECTION.
+    12	      SOURCE-COMPUTER. IBM-PC.
+    13	      OBJECT-COMPUTER. IBM-PC.
+    14	      INPUT-OUTPUT SECTION.
+    15	      FILE-CONTROL.
+    16            SELECT OUTFILE ASSIGN TO "TEST1.TXT".
+    17
+    18	      DATA DIVISION.
+    19	      FILE SECTION.
+    20	      FD OUTFILE.
+    21	      01 PRINT-REC.
+    22		  05 P-SNA PIC X(35).
+    23		  05 P-SNO PIC 9(5).
+    24		  05 P-CNA PIC X(4).
+    25		  05 P-UNA PIC X(10).
+    26	     *UNINAME
+    27		  05 P-AVE PIC 9(2)V99.
+    28		  05 P-REM PIC X(6).
+    29
+    30	      01 DATABASE.
+    31		  05 FILLER PIC X(80).
+    32
+    33	      WORKING-STORAGE SECTION.
+    34	      01 SNA PIC X(35) VALUE SPACES.
+    35	      01 SNO PIC 9(5) VALUE ZERO.
+    36	      01 CC PIC 9 VALUE ZERO.
+    37	     *COURSE CODE
+    38	      01 CNA PIC X(4) VALUE SPACES.
+    39	      01 UC PIC 9 VALUE ZERO.
+    40	     *UNIVERSITY CODE
+    41	      01 UNA PIC X(10) VALUE SPACES.
+    42	      01 MID PIC 9(2)V99 VALUE ZERO.
+    43	      01 FIN PIC 9(2)V99 VALUE ZERO.
+    44	      01 AVE PIC 9(2)V99 VALUE ZERO.
+    45	      01 REM PIC X(6) VALUE ZERO.
+    46	      01 EOFSW PIC 9 VALUE ZERO.
+    47	      01 ANOTHER PIC X VALUE SPACES.
+    48
+    49	     *TOTALS
+    50	      01 TNP PIC 9(3) VALUE ZERO.
+    51	      01 TNF PIC 9(3) VALUE ZERO.
+    52	      01 TOPUNI PIC X(10) VALUE SPACES.
+    53
+    54	      SCREEN SECTION.
+    55	      01 SCRE.
+    56		  02 BLANK SCREEN.
+    57
+    58	      PROCEDURE DIVISION.
+    59	      MAIN-RTN.
+    60		  OPEN EXTEND OUTFILE.    61		  PERFORM PROCESS-RTN UNTIL EOFSW = 1.					04MAR26 23:47:46  PAGE	  2
+    62		  CLOSE OUTFILE.
+    63		  STOP RUN.
+    64
+    65	      PROCESS-RTN.
+    66		  PERFORM HEADING-RTN.
+    67		  PERFORM NAME-NUMBER-RTN.
+    68		  PERFORM COURSE-UNI-RTN THRU COURSE-UNI-RTN-END.
+    69		  PERFORM GRADE-RTN THRU GRADE-RTN-END.
+    70		  PERFORM CONTINUE-RTN.
+    71		  PERFORM PRINT-RTN.
+    72
+    73	      HEADING-RTN.
+    74		  DISPLAY SCRE.
+    75            DISPLAY " " LINE 1 COLUMN 1.
+    76            DISPLAY "Cisco Certified" LINE 2 COLUMN 20.
+    77            DISPLAY " Network Administration" LINE 2 COLUMN 36.
+    78            DISPLAY " " LINE 3 COLUMN 1.
+    79            DISPLAY "Course Results" LINE 4 COLUMN 34.
+    80            DISPLAY "2026" LINE 5 COLUMN 38.
+    81
+    82	      NAME-NUMBER-RTN.
+    83            DISPLAY "Enter your name: " LINE 7 COLUMN 5.
+    84		  ACCEPT SNA LINE 7 COLUMN 60.
+    85
+    86            DISPLAY "Enter your student number: " LINE 8 COLUMN 5.
+    87		  ACCEPT SNO LINE 8 COLUMN 60.
+    88
+    89	      COURSE-UNI-RTN.
+    90
+    91	      UNI-RTN.
+    92            DISPLAY "Enter your university code: " LINE 9 COLUMN 5.
+    93		  ACCEPT UC LINE 9 COLUMN 60.
+    94		  EVALUATE UC
+    95		   WHEN 1
+    96             MOVE "UP" TO UNA
+    97		   WHEN 2
+    98             MOVE "ADMU" TO UNA
+    99		   WHEN 3
+   100             MOVE "DLSU" TO UNA
+   101		   WHEN 4
+   102             MOVE "UST" TO UNA
+   103		   WHEN 5
+   104             MOVE "PUP" TO UNA
+   105		   WHEN 6
+   106             MOVE "MAPUA" TO UNA
+   107		   WHEN 7
+   108             MOVE "FEU" TO UNA
+   109		   WHEN OTHER
+   110             DISPLAY "1-7 Only!" LINE 9 COLUMN 25
+   111		   GO TO UNI-RTN
+   112		  END-EVALUATE.
+   113
+   114            DISPLAY "University: " LINE 10 COLUMN 5.
+   115		  DISPLAY UNA LINE 10 COLUMN 60.
+   116
+   117	      COURSE-RTN.
+   118            DISPLAY "Enter your program code: " LINE 11 COLUMN 5.
+   119		  ACCEPT CC LINE 11 COLUMN 60.
+   120		  EVALUATE CC   121		   WHEN 1								04MAR26 23:47:46  PAGE	  3
+   122             MOVE "BSCS" TO CNA
+   123		   WHEN 2
+   124             MOVE "BSIT" TO CNA
+   125		   WHEN 3
+   126             MOVE "BSIS" TO CNA
+   127		   WHEN 4
+   128             MOVE "BSCpE" TO CNA
+   129		   WHEN OTHER
+   130             DISPLAY "1-4 Only!" LINE 11 COLUMN 25
+   131		   GO TO COURSE-RTN
+   132		  END-EVALUATE.
+   133
+   134            DISPLAY "Program: " LINE 12 COLUMN 5.
+   135		  DISPLAY CNA LINE 12 COLUMN 60.
+   136
+   137	      COURSE-UNI-RTN-END.
+   138
+   139	      GRADE-RTN.
+   140
+   141	      MID-RTN.
+   142            DISPLAY "Enter your midterm grade: " LINE 13 COLUMN 5.
+   143		  ACCEPT MID LINE 13 COLUMN 60.
+   144		  IF MID < 1.00 OR MID > 5.00
+   145                DISPLAY "1.00 - 5.00 only!" LINE 13 COLUMN 35
+   146		      GO TO MID-RTN
+   147		      END-IF.
+   148
+   149	      FIN-RTN.
+   150            DISPLAY "Enter your final grade: " LINE 14 COLUMN 5.
+   151		  ACCEPT FIN LINE 14 COLUMN 60.
+   152		  IF FIN < 1.00 OR FIN > 5.00
+   153                DISPLAY "1.00 - 5.00 only!" LINE 14 COLUMN 25
+   154		      GO TO FIN-RTN
+   155		      END-IF.
+   156
+   157	      REM-RTN.
+   158		  COMPUTE AVE = (MID + FIN) / 2
+   159            DISPLAY "Your average is: " LINE 15 COLUMN 5.
+   160		  DISPLAY AVE LINE 15 COLUMN 60.
+   161
+   162            DISPLAY "Remarks: " LINE 16 COLUMN 5.
+   163		  IF AVE > 1.00 AND AVE < 1.15
+   164                DISPLAY "Summa Cum Laude!" LINE 16 COLUMN 60
+   165                MOVE "Passed" TO REM
+   166		  ELSE IF AVE > 1.15 AND AVE < 1.50
+   167                DISPLAY "Magna Cum Laude!" LINE 16 COLUMN 60
+   168                MOVE "Passed" TO REM
+   169		  ELSE IF AVE > 1.50 AND AVE < 1.75
+   170                DISPLAY "Cum Laude!" LINE 16 COLUMN 60
+   171                MOVE "Passed" TO REM
+   172		  ELSE IF AVE > 1.75 AND AVE < 3.00
+   173                DISPLAY "Passed!" LINE 16 COLUMN 60
+   174                MOVE "Passed" TO REM
+   175		  ELSE
+   176                DISPLAY "Failed." LINE 16 COLUMN 60
+   177                MOVE "Failed" TO REM
+   178		  END-IF
+   179		  END-IF
+   180		  END-IF   181		  END-IF.								04MAR26 23:47:46  PAGE	  4
+   182	      GRADE-RTN-END.
+   183
+   184	      CONTINUE-RTN.
+   185            DISPLAY 'Input Another Record? (Y/N): ' LINE 19 COLUMN 26.
+   186		  ACCEPT ANOTHER LINE 19 COLUMN 55.
+   187            IF ANOTHER = 'Y' OR ANOTHER = 'y'
+   188		  MOVE 0 TO EOFSW
+   189		  MOVE SPACES TO REM
+   190		      ELSE
+   191                IF ANOTHER = 'N' OR ANOTHER = 'n'
+   192		      MOVE 1 TO EOFSW
+   193			ELSE
+   194                  DISPLAY 'Y or N only!' LINE 18 COLUMN 32
+   195			GO TO CONTINUE-RTN
+   196		     END-IF
+   197		  END-IF.
+   198
+   199	      PRINT-RTN.
+   200		  MOVE SNA TO P-SNA.
+   201		  MOVE SNO TO P-SNO.
+   202		  MOVE CNA TO P-CNA.
+   203		  MOVE UNA TO P-UNA.
+   204		  MOVE AVE TO P-AVE.
+   205		  MOVE REM TO P-REM.Realia COBOL Version 4.000   SN: 01-07732  C:TRY.COB					04MAR26 23:47:46  PAGE	  5
+
+
+
+				    Segment Table
+			Segment    Number     Length	    Name
+
+			  C00	     05        0E10	 TRY$C00
+			  D00	     06        0456	 TRY$D00
+
+
+			Realia COBOL Compiler Version Information
+
+			      Pass 1	 Version 4.059
+			      Pass 1a	 Version 4.025
+			      Pass 2	 Version 4.059
+			      Pass 2a	 Version 4.024
+			      Pass 3	 Version 4.083
+			      Pass 4	 Version 4.028
+
+
+			Compilation Directives in Effect
+
+				    COMP-4
+				    NODCHK
+				      OPT
+				    NOCALL
+				    NOSUBCHK
+				      STRCHK
+				      ANSITRUNC
+				    NOSMALLCOMP
+				    NODCALL
+				    NODIVZERO
+				    NOEPDCALL
+				      APOST
+				      ASCII
+				      STATABORT
+				      MOVELINK
+				    NOBLL4K
+				      ARGCHK
+				      UPLOW
+				      WRITEAFTER
+				      SOSI
+				      DIALECT-REALIA4
+
+				    ERROR LEVEL LIMIT: W
+
+			Source lines compiled:	     205
+			Compilation time (mm:ss.hh):  0:01.71
+			Compilation speed (lines/minute):  7192
+
+			Compilation date (yy/mm/dd): 26/03/04
+			     Time of day (hh:mm:ss): 23:47:47
+
+			Source length in LST file:000007140

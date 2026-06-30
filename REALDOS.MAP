@@ -1,0 +1,10 @@
+
+ Start  Stop   Length Name                   Class            Group
+ 00000H 0000BH 0000CH RCLEP_TEXT             CODE
+ 0000CH 0000CH 00000H RCLMI_TEXT             CODE
+ 0000CH 0000DH 00002H RCLSG_TEXT             CODE
+ 0000EH 0000EH 00000H RCLEG_TEXT             CODE
+ 00010H 00F6EH 00F5FH FINPP$C00              CODE
+ 00F70H 0137CH 0040DH FINPP$D00              FAR_DATA
+
+ Origin   Group
